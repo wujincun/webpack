@@ -52,13 +52,20 @@ var plugins = PRODUCTION
     }),
     // 压缩 js配置
     new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true,
+     /*   sourceMap: true,
         compress: {
             warnings: false,
             drop_console: false
-        }
+        }*/
     })
 ];
+/*???*/
+plugins.push(
+    new webpack.DefinePlugin({
+        DEVELOPMENT:JSON.stringify(DEVELOPMENT),
+        PRODUCTION:JSON.stringify(PRODUCTION)
+    })
+);
 
 module.exports = {
     entry: entry,

@@ -4,7 +4,12 @@
 var a = require("./a");
 import '../style/main.less';
 import {multiply} from "./common.js";
-const newMess = () => (multiply(4,4      ));
+const newMess = () => (`
+    DEV:${DEVELOPMENT.toString()}</br>
+    PRO:${PRODUCTION.toString()}</br>
+`);
+
+
 var app = document.getElementById('app');
 app.innerHTML=newMess();
 
