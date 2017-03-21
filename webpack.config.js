@@ -5,6 +5,7 @@ var path = require('path'),
     webpack = require('webpack'),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
     html = require('html-withimg-loader'),
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
     autoprefixer = require('autoprefixer'),
     px2rem = require('postcss-px2rem');
 
@@ -22,12 +23,21 @@ var entry = PRODUCTION
 var plugins = PRODUCTION
     ? []
     : [
+    //热更新 的配置
     new webpack.HotModuleReplacementPlugin(),
+    //html 的配置
     new HtmlWebpackPlugin({
         template: 'html-withimg-loader!' + path.resolve("src/index.html"),
         filename: "index.html",
         inject: "body"
     }),
+    // css 的配置
+    new ExtractTextPlugin({
+        filename:"css/main.css"
+        /*disable: false,
+        allChunks: true*/
+    }),
+    //loaders 的配置
     new webpack.LoaderOptionsPlugin({
         minimize: true,
         debug: false,
@@ -38,6 +48,14 @@ var plugins = PRODUCTION
                     require('autoprefixer')({browsers: ['last 2 versions']}),
                     px2rem({remUnit: 64})];
             }
+        }
+    }),
+    // 压缩 js配置
+    new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+            warnings: false,
+            drop_console: false
         }
     })
 ];
@@ -81,6 +99,7 @@ module.exports = {
 
 
             },
+            /*//不单独打包css
             {
                 test: /\.less$/,
                 use: [
@@ -89,6 +108,18 @@ module.exports = {
                     "postcss-loader",
                     "less-loader"
                 ]
+            },*/
+            {
+                test: /\.less$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [
+                        "css-loader",
+                        "postcss-loader",
+                        "less-loader"
+                    ]
+                    //publicPath: "/dist"
+                })
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
